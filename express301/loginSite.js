@@ -7,6 +7,7 @@ const helmet = require("helmet");
 app.use(helmet());
 
 const cookieParser = require("cookie-parser");
+const { error } = require("console");
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -51,12 +52,27 @@ app.get("/welcome", (req, res, next) => {
     });
 });
 
-app.get("/story/:storyId", (req, res, next) => {
+app.param("id", (req, res, next, id) => {
+    console.log("params called:", id);
+    next();
+});
+
+app.get("/story/:id", (req, res, next) => {
     res.send(`<h1>Story ${req.params.storyId}</h1>`);
 });
 
 app.get("/story/:storyId/:links", (req, res, next) => {
     res.send(`<h1>Story ${req.params.storyId} - ${req.params.links}</h1>`);
+});
+
+app.get("/statement", (req, res, next) => {
+    res.download(
+        path.join(__dirname, "userStatement/BankStatementChequing.png"),
+        "ayush.png",
+        (error) => {
+            console.log(error);
+        }
+    );
 });
 
 app.get("/logout", (req, res, next) => {
