@@ -16,11 +16,21 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+app.use((req, res, next) => {
+    if (req.query.msg === "fail") {
+        res.locals.msg = "Sorry. This username and password does not exists";
+    } else {
+        res.locals.msg = "";
+    }
+    next();
+});
+
 app.get("/", (req, res) => {
     res.send("Sanity check");
 });
 
 app.get("/login", (req, res) => {
+    // console.log(req.query);
     res.render("login");
 });
 
@@ -39,6 +49,14 @@ app.get("/welcome", (req, res, next) => {
     res.render("welcome", {
         username: req.cookies.username,
     });
+});
+
+app.get("/story/:storyId", (req, res, next) => {
+    res.send(`<h1>Story ${req.params.storyId}</h1>`);
+});
+
+app.get("/story/:storyId/:links", (req, res, next) => {
+    res.send(`<h1>Story ${req.params.storyId} - ${req.params.links}</h1>`);
 });
 
 app.get("/logout", (req, res, next) => {
